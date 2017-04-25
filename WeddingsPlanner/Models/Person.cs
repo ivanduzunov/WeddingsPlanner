@@ -10,12 +10,16 @@ namespace WeddingsPlanner.Models
 {
     public class Person
     {
-        private string gender;
+        public Person()
+        {
+            this.Invitations = new HashSet<Invitation>();
+        }
+        
         [Key]
         public int Id { get; set; }
         [MinLength(1), MaxLength(60)]
         public string FirstName { get; set; }
-        public char MiddleNameSymbol { get; set; }
+        public string MiddleNameSymbol { get; set; }
         [MinLength(2)]
         public string LastName { get; set; }
         public string FullName
@@ -27,22 +31,8 @@ namespace WeddingsPlanner.Models
         }
         public string Gender
         {
-            get
-            {
-                return this.gender;
-            }
-            set
-            {
-                string checkGender = value;
-                if (checkGender == "Male" || checkGender == "Female " || checkGender == "Not Specified")
-                {
-                    this.gender = value;
-                }
-                else
-                {
-                    throw new Exception("Invalid Gender!");
-                }
-            }
+            get;set;
+               
         }
         public DateTime Birthdate { get; set; }
         public string Phone { get; set; }
@@ -51,9 +41,18 @@ namespace WeddingsPlanner.Models
         {
             get
             {
-                return DateTime.Now.Year - Birthdate.Year;
+                return 2017 - Birthdate.Year;
             }
         }
+        public int? CashPresentId { get; set; }
+        public int? GiftPresentId { get; set; }
+        public virtual Cash CashPresent { get; set; }
+        public virtual Gift GiftPresent { get; set; }
+        public int? BridegroomWedddingId { get; set; }
+        public virtual Wedding BridegroomWeddding { get; set; }
+        public int? BrideWedddingId { get; set; }
+        public virtual Wedding BrideWeddding { get; set; }
+        public virtual ICollection<Invitation> Invitations { get; set; }
 
     }
 }
