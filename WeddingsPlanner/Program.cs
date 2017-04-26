@@ -8,6 +8,7 @@ using System.IO;
 using Newtonsoft.Json;
 using System.Text;
 using System.Threading;
+using WeddingsPlanner.ImportJSON;
 
 namespace WeddingsPlanner
 {
@@ -16,11 +17,10 @@ namespace WeddingsPlanner
         static void Main(string[] args)
         {
             var context = new WeddingContext();
-            // InitDb(context);
+            InitDb(context);
             ImportAgencies(context);
             ImportPeople(context);
-           
-           
+
         }
         public static void InitDb(WeddingContext context)
         {
@@ -30,23 +30,22 @@ namespace WeddingsPlanner
             Console.WriteLine("Database Initialized!");
             Console.WriteLine();
             Console.WriteLine("Press any key...");
-            Console.ReadKey();            
+            Console.ReadKey();
         }
         public static void ImportAgencies(WeddingContext context)
         {
-            Console.WriteLine("Importing Agencies ...");
+            Console.WriteLine("Reading <agencies.json> ...");
             var json = File.ReadAllText(@"C:\Users\Mihail\Documents\visual studio 2015\Projects\WeddingsPlanner\WeddingsPlanner\ImportJSON\agencies.json");
 
             var jsonList = JsonConvert.DeserializeObject<IEnumerable<Agency>>(json);
-            ImportJSON.Import.AddAgencies(jsonList);
+            Import.AddAgencies(jsonList);
         }
         public static void ImportPeople(WeddingContext context)
         {
-            Console.WriteLine("Importing People ...");
+            Console.WriteLine("Reading <people.json> ...");
             var json = File.ReadAllText(@"C:\Users\Mihail\Documents\visual studio 2015\Projects\WeddingsPlanner\WeddingsPlanner\ImportJSON\people.json");
-
-            var jsonList = JsonConvert.DeserializeObject<IEnumerable<Person>>(json);
-            ImportJSON.Import.AddPeople(jsonList);
+            var jsonList = JsonConvert.DeserializeObject<IEnumerable<PersonDto>>(json);
+            Import.AddPeople(jsonList);
 
         }
     }

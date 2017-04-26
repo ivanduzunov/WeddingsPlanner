@@ -20,7 +20,7 @@ namespace WeddingsPlanner
             modelBuilder.Entity<Person>().Property(p => p.Email).IsOptional();
             modelBuilder.Entity<Person>().Property(p => p.Phone).IsOptional();
             modelBuilder.Entity<Person>().Property(p => p.MiddleNameSymbol).IsOptional();
-            modelBuilder.Entity<Person>().Property(p => p.Birthdate).IsOptional();
+            modelBuilder.Entity<Person>().Property(p => p.Birthday).IsOptional();
             modelBuilder.Entity<Person>().HasOptional(p => p.BrideWeddding).WithRequired(w => w.Bride);
             modelBuilder.Entity<Person>().HasOptional(p => p.BridegroomWeddding).WithRequired(w => w.Bridegroom);
 

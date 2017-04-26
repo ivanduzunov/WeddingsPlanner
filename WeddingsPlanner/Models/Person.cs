@@ -34,14 +34,14 @@ namespace WeddingsPlanner.Models
             get;set;
                
         }
-        public DateTime Birthdate { get; set; }
+        public DateTime Birthday { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }
         public int Age
         {
             get
             {
-                return 2017 - Birthdate.Year;
+                return 2017 - Birthday.Year;
             }
         }
         public int? CashPresentId { get; set; }
