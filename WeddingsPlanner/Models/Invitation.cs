@@ -12,7 +12,7 @@ namespace WeddingsPlanner.Models
     {
         [Key]
         public int Id { get; set; }
-        public int GuestId { get; set; }
+        public int? GuestId { get; set; }
         public virtual Person Guest { get; set; }
         public int? CashId { get; set; }
         public int? GiftId { get; set; }
@@ -20,7 +20,7 @@ namespace WeddingsPlanner.Models
         public virtual Cash Cash { get; set; }
         public virtual Gift Gift { get; set; }
         public virtual Wedding Wedding { get; set; }
-        public string Attending { get; set; }
+        public bool Attending { get; set; }
         public string Family { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 
 namespace WeddingsPlanner.Models
@@ -13,8 +14,12 @@ namespace WeddingsPlanner.Models
         public Person()
         {
             this.Invitations = new HashSet<Invitation>();
+            this.Bridegrooms = new HashSet<Wedding>();
+            this.Brides = new HashSet<Wedding>();
+
+
         }
-        
+
         [Key]
         public int Id { get; set; }
         [MinLength(1), MaxLength(60)]
@@ -48,11 +53,12 @@ namespace WeddingsPlanner.Models
         public int? GiftPresentId { get; set; }
         public virtual Cash CashPresent { get; set; }
         public virtual Gift GiftPresent { get; set; }
-        public int? BridegroomWedddingId { get; set; }
-        public virtual Wedding BridegroomWeddding { get; set; }
-        public int? BrideWedddingId { get; set; }
-        public virtual Wedding BrideWeddding { get; set; }
+       
         public virtual ICollection<Invitation> Invitations { get; set; }
+        [InverseProperty("Bride")]
+        public virtual ICollection<Wedding> Brides { get; set; }
+        [InverseProperty("Bridegroom")]
+        public virtual ICollection<Wedding> Bridegrooms { get; set; }
 
     }
 }

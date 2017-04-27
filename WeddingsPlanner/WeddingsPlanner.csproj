@@ -59,7 +59,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ImportJSON\Import.cs" />
+    <Compile Include="ImportJSON\GuestDto.cs" />
     <Compile Include="ImportJSON\PersonDto.cs" />
+    <Compile Include="ImportJSON\WeddingDto.cs" />
     <Compile Include="Models\Agency.cs" />
     <Compile Include="Models\Cash.cs" />
     <Compile Include="Models\Gift.cs" />

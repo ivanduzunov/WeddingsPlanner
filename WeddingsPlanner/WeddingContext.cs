@@ -21,11 +21,8 @@ namespace WeddingsPlanner
             modelBuilder.Entity<Person>().Property(p => p.Phone).IsOptional();
             modelBuilder.Entity<Person>().Property(p => p.MiddleNameSymbol).IsOptional();
             modelBuilder.Entity<Person>().Property(p => p.Birthday).IsOptional();
-            modelBuilder.Entity<Person>().HasOptional(p => p.BrideWeddding).WithRequired(w => w.Bride);
-            modelBuilder.Entity<Person>().HasOptional(p => p.BridegroomWeddding).WithRequired(w => w.Bridegroom);
-
-            modelBuilder.Entity<Wedding>().HasRequired(w => w.Bride);
-            modelBuilder.Entity<Wedding>().HasRequired(w => w.Bridegroom);
+           
+            
             modelBuilder.Entity<Wedding>().HasMany(w => w.Venues).WithMany(v => v.Weddings).
                 Map(wed => {
                     wed.ToTable("Venues and Weddings");
@@ -34,7 +31,7 @@ namespace WeddingsPlanner
 
             modelBuilder.Entity<Cash>().HasRequired(c => c.Invitation).WithOptional(i => i.Cash);
             modelBuilder.Entity<Gift>().HasRequired(c => c.Invitation).WithOptional(i => i.Gift);
-            modelBuilder.Entity<Invitation>().HasRequired(i => i.Guest).WithMany(p => p.Invitations);
+           
           
             modelBuilder.Entity<Cash>().HasRequired(c => c.Owner);
             modelBuilder.Entity<Gift>().HasRequired(c => c.Owner);

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WeddingsPlanner.Models;
+using System.Data.Entity.Validation;
 
 
 namespace WeddingsPlanner.ImportJSON
@@ -30,7 +31,7 @@ namespace WeddingsPlanner.ImportJSON
                     Console.WriteLine($"Agency {newAgency.Name} from {newAgency.Town} added to the database!");
                 }
                 context.SaveChanges();
-                Console.WriteLine("All agencies added. Press any key..."); Console.ReadKey();
+
             }
         }
         public static void AddPeople(IEnumerable<PersonDto> people)
@@ -60,13 +61,68 @@ namespace WeddingsPlanner.ImportJSON
                             Phone = person.Phone,
                         };
                         Console.WriteLine($"Person: {personImp.FullName}, gender: {personImp.Gender} imported!");
-                        context.People.Add(personImp);                  
+                        context.People.Add(personImp);
                     }
                 }
 
                 context.SaveChanges();
             }
-            Console.WriteLine("All People added! Press any key to continue ..."); Console.ReadKey();
+
+        }
+        public static void AddWeddingsInvitations(IEnumerable<WeddingDto> weddings)
+        {
+            Console.WriteLine("Importing Weddings...");
+            using (WeddingContext context = new WeddingContext())
+            {
+
+                foreach (WeddingDto wedding in weddings)
+                {
+                    if (wedding.Bride != null && wedding.Bridegroom != null && wedding.Date != default(DateTime) && wedding.Agency != null)
+                    {
+                        Wedding wedAdd = new Wedding
+                        {
+                            Bride = context.People.Where(p => p.FirstName + " " + p.MiddleNameSymbol + p.LastName == wedding.Bride).FirstOrDefault(),
+                            Bridegroom = context.People.Where(p => p.FirstName + " " + p.MiddleNameSymbol + p.LastName == wedding.Bridegroom).FirstOrDefault(),
+                            Date = wedding.Date,
+                            Agency = context.Agencies.Where(a => a.Name == wedding.Agency).FirstOrDefault()
+                        };
+
+                        List<Invitation> invAddList = new List<Invitation>();
+                        if (wedding.Guests != null)
+                        {
+                            foreach (GuestDto invitation in wedding.Guests)
+                            {
+                                Invitation Invitation = new Invitation
+                                {
+                                    WeddingId = wedAdd.Id,
+                                    Guest = context.People.Where(p => p.FirstName + " " + p.MiddleNameSymbol + p.LastName == invitation.Name).FirstOrDefault(),
+                                    Attending = (invitation.RSVP == "true") ? true : false,
+                                    Family = invitation.Family,
+
+                                };
+                                wedAdd.Invitations.Add(Invitation);
+                                context.SaveChanges();
+                            }
+                        }
+
+                        context.Weddings.Add(wedAdd);
+
+
+                        
+
+                       
+                        context.SaveChanges();
+                        Console.WriteLine($"Wedding of {wedding.Bride}, with Bridesgroom {wedding.Bridegroom} with {wedding.Guests.Count} guests imported!");
+
+
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid Wedding!");
+                    }
+
+                }
+            }
         }
     }
 }

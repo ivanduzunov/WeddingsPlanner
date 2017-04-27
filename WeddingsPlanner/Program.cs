@@ -17,9 +17,14 @@ namespace WeddingsPlanner
         static void Main(string[] args)
         {
             var context = new WeddingContext();
-            InitDb(context);
-            ImportAgencies(context);
-            ImportPeople(context);
+            //InitDb(context);
+            //ImportAgencies(context);
+            //ImportPeople(context);
+            //ImportWeddingsAndInvitations(context);
+            foreach (var item in context.Invitations)
+            {
+                Console.WriteLine(item.GuestId);
+            }
 
         }
         public static void InitDb(WeddingContext context)
@@ -47,6 +52,13 @@ namespace WeddingsPlanner
             var jsonList = JsonConvert.DeserializeObject<IEnumerable<PersonDto>>(json);
             Import.AddPeople(jsonList);
 
+        }
+        public static void ImportWeddingsAndInvitations(WeddingContext context)
+        {
+            Console.WriteLine("Reading weddings.json...");
+            var json = File.ReadAllText(@"C:\Users\Mihail\Documents\visual studio 2015\Projects\WeddingsPlanner\WeddingsPlanner\ImportJSON\weddings.json");
+            var jsonList = JsonConvert.DeserializeObject<IEnumerable<WeddingDto>>(json);
+            Import.AddWeddingsInvitations(jsonList);
         }
     }
 }
