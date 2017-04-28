@@ -62,6 +62,7 @@
     <Compile Include="ImportJSON\GuestDto.cs" />
     <Compile Include="ImportJSON\PersonDto.cs" />
     <Compile Include="ImportJSON\WeddingDto.cs" />
+    <Compile Include="ImportXML\ImportXml.cs" />
     <Compile Include="Models\Agency.cs" />
     <Compile Include="Models\Cash.cs" />
     <Compile Include="Models\Gift.cs" />
@@ -80,7 +81,10 @@
     <None Include="ImportJSON\weddings.json" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="ImportXML\presents.xml" />
+    <Content Include="ImportXML\venues.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

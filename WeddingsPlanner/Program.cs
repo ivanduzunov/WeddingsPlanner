@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 using WeddingsPlanner.Models;
 using System.IO;
 using Newtonsoft.Json;
-using System.Text;
 using System.Threading;
 using WeddingsPlanner.ImportJSON;
+using System.Xml.Linq;
+using WeddingsPlanner.ImportXML;
 
 namespace WeddingsPlanner
 {
@@ -17,10 +18,12 @@ namespace WeddingsPlanner
         static void Main(string[] args)
         {
             var context = new WeddingContext();
-            //InitDb(context);
-            //ImportAgencies(context);
-            //ImportPeople(context);
-            //ImportWeddingsAndInvitations(context);            
+            InitDb(context);
+            ImportAgencies(context);
+            ImportPeople(context);
+            ImportWeddingsAndInvitations(context);
+            ImportVenues(context);
+            ImportPresents(context);
 
         }
         public static void InitDb(WeddingContext context)
@@ -55,6 +58,18 @@ namespace WeddingsPlanner
             var json = File.ReadAllText(@"C:\Users\Mihail\Documents\visual studio 2015\Projects\WeddingsPlanner\WeddingsPlanner\ImportJSON\weddings.json");
             var jsonList = JsonConvert.DeserializeObject<IEnumerable<WeddingDto>>(json);
             Import.AddWeddingsInvitations(jsonList);
+        }
+        public static void ImportVenues(WeddingContext context)
+        {
+            Console.WriteLine("Reading venues.xml ...");
+            XDocument venuesDoc = XDocument.Load(@"C:\Users\Mihail\Documents\visual studio 2015\Projects\WeddingsPlanner\WeddingsPlanner\ImportXML\venues.xml");          
+            ImportXml.AddVenues(venuesDoc);
+        }
+        public static void ImportPresents(WeddingContext context)
+        {
+            Console.WriteLine("Reading presents.xml ...");
+            XDocument presentsDoc = XDocument.Load(@"C:\Users\Mihail\Documents\visual studio 2015\Projects\WeddingsPlanner\WeddingsPlanner\ImportXML\presents.xml");
+            ImportXml.AddPresents(presentsDoc);
         }
     }
 }

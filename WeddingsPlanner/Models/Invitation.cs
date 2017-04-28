@@ -17,8 +17,7 @@ namespace WeddingsPlanner.Models
         public int? CashId { get; set; }
         public int? GiftId { get; set; }
         public int WeddingId { get; set; }
-        public virtual Cash Cash { get; set; }
-        public virtual Gift Gift { get; set; }
+        public string Present { get; set; }
         public virtual Wedding Wedding { get; set; }
         public bool Attending { get; set; }
         public string Family { get; set; }

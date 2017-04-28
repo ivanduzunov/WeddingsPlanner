@@ -15,7 +15,6 @@ namespace WeddingsPlanner.Models
         public int OwnerId { get; set; }
         public virtual Person Owner { get; set; }
         public double CashAmount { get; set; }
-        public int InvitationId { get; set; }
-        public virtual Invitation Invitation { get; set; }
+
     }
 }

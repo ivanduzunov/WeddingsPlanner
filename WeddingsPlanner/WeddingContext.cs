@@ -29,8 +29,6 @@ namespace WeddingsPlanner
                     wed.MapLeftKey("Wedding");
                     wed.MapRightKey("Venue");});
 
-            modelBuilder.Entity<Cash>().HasRequired(c => c.Invitation).WithOptional(i => i.Cash);
-            modelBuilder.Entity<Gift>().HasRequired(c => c.Invitation).WithOptional(i => i.Gift);
            
           
             modelBuilder.Entity<Cash>().HasRequired(c => c.Owner);
