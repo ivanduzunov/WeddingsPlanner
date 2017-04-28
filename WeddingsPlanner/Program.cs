@@ -20,11 +20,7 @@ namespace WeddingsPlanner
             //InitDb(context);
             //ImportAgencies(context);
             //ImportPeople(context);
-            //ImportWeddingsAndInvitations(context);
-            foreach (var item in context.Invitations)
-            {
-                Console.WriteLine(item.GuestId);
-            }
+            //ImportWeddingsAndInvitations(context);            
 
         }
         public static void InitDb(WeddingContext context)

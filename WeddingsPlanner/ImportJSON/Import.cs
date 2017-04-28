@@ -74,53 +74,45 @@ namespace WeddingsPlanner.ImportJSON
             Console.WriteLine("Importing Weddings...");
             using (WeddingContext context = new WeddingContext())
             {
-
                 foreach (WeddingDto wedding in weddings)
                 {
-                    if (wedding.Bride != null && wedding.Bridegroom != null && wedding.Date != default(DateTime) && wedding.Agency != null)
+
+                    var bride = context.People.Where(p => p.FirstName + " " + p.MiddleNameSymbol + " " + p.LastName == wedding.Bride).FirstOrDefault();
+                    var bridesgroom = context.People.Where(p => p.FirstName + " " + p.MiddleNameSymbol + " " + p.LastName == wedding.Bridegroom).FirstOrDefault();
+                    var agency = context.Agencies.Where(a => a.Name == wedding.Agency).FirstOrDefault();
+
+                    if (bride == null || bridesgroom == null || wedding.Date == default(DateTime) || agency == null)
                     {
-                        Wedding wedAdd = new Wedding
+                        Console.WriteLine("Error. Invalid data provided");
+                        continue;
+                    }
+                    else
+                    {
+                        var wedAdd = new Wedding
                         {
-                            Bride = context.People.Where(p => p.FirstName + " " + p.MiddleNameSymbol + p.LastName == wedding.Bride).FirstOrDefault(),
-                            Bridegroom = context.People.Where(p => p.FirstName + " " + p.MiddleNameSymbol + p.LastName == wedding.Bridegroom).FirstOrDefault(),
+                            Bride = bride,
+                            Bridegroom = bridesgroom,
                             Date = wedding.Date,
-                            Agency = context.Agencies.Where(a => a.Name == wedding.Agency).FirstOrDefault()
+                            Agency = agency
                         };
 
-                        List<Invitation> invAddList = new List<Invitation>();
                         if (wedding.Guests != null)
                         {
                             foreach (GuestDto invitation in wedding.Guests)
                             {
-                                Invitation Invitation = new Invitation
+                                wedAdd.Invitations.Add(new Invitation
                                 {
-                                    WeddingId = wedAdd.Id,
-                                    Guest = context.People.Where(p => p.FirstName + " " + p.MiddleNameSymbol + p.LastName == invitation.Name).FirstOrDefault(),
+                                    Guest = context.People.Where(p => p.FirstName + " " + p.MiddleNameSymbol + " " + p.LastName == invitation.Name).FirstOrDefault(),
                                     Attending = (invitation.RSVP == "true") ? true : false,
                                     Family = invitation.Family,
 
-                                };
-                                wedAdd.Invitations.Add(Invitation);
-                                context.SaveChanges();
+                                });
                             }
                         }
-
                         context.Weddings.Add(wedAdd);
-
-
-                        
-
-                       
                         context.SaveChanges();
-                        Console.WriteLine($"Wedding of {wedding.Bride}, with Bridesgroom {wedding.Bridegroom} with {wedding.Guests.Count} guests imported!");
-
-
+                        Console.WriteLine($"Wedding of {bride.FirstName}, with Bridesgroom {bridesgroom.FirstName} with {wedAdd.Invitations.Count} guests imported!");
                     }
-                    else
-                    {
-                        Console.WriteLine("Invalid Wedding!");
-                    }
-
                 }
             }
         }
