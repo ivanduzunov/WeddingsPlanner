@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Sofia>
+  <venue>
+    <name>Horse and Plow</name>
+    <weddings-count>1</weddings-count>
+  </venue>
+  <venue>
+    <name>Glasshouse</name>
+    <weddings-count>4</weddings-count>
+  </venue>
+  <venue>
+    <name>Sand Spring Restaurant</name>
+    <weddings-count>0</weddings-count>
+  </venue>
+  <venue>
+    <name>Boar</name>
+    <weddings-count>2</weddings-count>
+  </venue>
+  <venue>
+    <name>St John the Divine</name>
+    <weddings-count>1</weddings-count>
+  </venue>
+  <venue>
+    <name>St John the Baptist</name>
+    <weddings-count>0</weddings-count>
+  </venue>
+</Sofia>
