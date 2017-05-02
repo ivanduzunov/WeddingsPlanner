@@ -81,7 +81,7 @@ namespace WeddingsPlanner.ImportJSON
                     var bridesgroom = context.People.Where(p => p.FirstName + " " + p.MiddleNameSymbol + " " + p.LastName == wedding.Bridegroom).FirstOrDefault();
                     var agency = context.Agencies.Where(a => a.Name == wedding.Agency).FirstOrDefault();
 
-                    if (bride == null || bridesgroom == null || wedding.Date == default(DateTime) || agency == null)
+                    if (bride == null || bridesgroom == null || wedding.Date == default(DateTime) || agency == null || wedding.Guests.Count == 0)
                     {
                         Console.WriteLine("Error. Invalid data provided");
                         continue;
@@ -96,18 +96,27 @@ namespace WeddingsPlanner.ImportJSON
                             Agency = agency
                         };
 
-                        if (wedding.Guests != null)
+
+                        foreach (GuestDto invitation in wedding.Guests)
                         {
-                            foreach (GuestDto invitation in wedding.Guests)
+                            var guest = context.People.Where(p => p.FirstName + " " + p.MiddleNameSymbol + " " + p.LastName == invitation.Name).FirstOrDefault();
+                            if (guest != null)
                             {
                                 wedAdd.Invitations.Add(new Invitation
                                 {
-                                    Guest = context.People.Where(p => p.FirstName + " " + p.MiddleNameSymbol + " " + p.LastName == invitation.Name).FirstOrDefault(),
+                                    Guest = guest,
                                     Attending = (invitation.RSVP == "true") ? true : false,
                                     Family = invitation.Family,
 
                                 });
+                                Console.WriteLine($"Invitation with status {invitation.RSVP} added!");
                             }
+                            else
+                            {
+                                Console.WriteLine("Invalid Invitation data!");
+                            }
+
+
                         }
                         context.Weddings.Add(wedAdd);
                         context.SaveChanges();

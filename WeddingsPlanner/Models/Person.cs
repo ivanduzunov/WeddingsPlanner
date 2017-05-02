@@ -16,8 +16,8 @@ namespace WeddingsPlanner.Models
             this.Invitations = new HashSet<Invitation>();
             this.Bridegrooms = new HashSet<Wedding>();
             this.Brides = new HashSet<Wedding>();
-
-
+            this.GiftPresent = new HashSet<Gift>();
+            this.CashPresent = new HashSet<Cash>();
         }
 
         [Key]
@@ -36,8 +36,8 @@ namespace WeddingsPlanner.Models
         }
         public string Gender
         {
-            get;set;
-               
+            get; set;
+
         }
         public DateTime Birthday { get; set; }
         public string Phone { get; set; }
@@ -49,11 +49,9 @@ namespace WeddingsPlanner.Models
                 return 2017 - Birthday.Year;
             }
         }
-        public int? CashPresentId { get; set; }
-        public int? GiftPresentId { get; set; }
-        public virtual Cash CashPresent { get; set; }
-        public virtual Gift GiftPresent { get; set; }
-       
+        public virtual ICollection<Cash> CashPresent { get; set; }
+        public virtual ICollection<Gift> GiftPresent { get; set; }
+
         public virtual ICollection<Invitation> Invitations { get; set; }
         [InverseProperty("Bride")]
         public virtual ICollection<Wedding> Brides { get; set; }

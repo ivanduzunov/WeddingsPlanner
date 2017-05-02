@@ -10,6 +10,8 @@ using System.Threading;
 using WeddingsPlanner.ImportJSON;
 using System.Xml.Linq;
 using WeddingsPlanner.ImportXML;
+using WeddingsPlanner.ExportJSON;
+using WeddingsPlanner.ExportXML;
 
 namespace WeddingsPlanner
 {
@@ -18,13 +20,15 @@ namespace WeddingsPlanner
         static void Main(string[] args)
         {
             var context = new WeddingContext();
-            InitDb(context);
-            ImportAgencies(context);
-            ImportPeople(context);
-            ImportWeddingsAndInvitations(context);
-            ImportVenues(context);
-            ImportPresents(context);
-
+            //InitDb(context);
+            //ImportAgencies(context);
+            //ImportPeople(context);
+            //ImportWeddingsAndInvitations(context);
+            //ImportVenues(context);
+            //ImportPresents(context);
+            //ExportOrderedAgencies(context);
+            //ExportGuestList(context);
+            ExportVenues(context);
         }
         public static void InitDb(WeddingContext context)
         {
@@ -62,7 +66,7 @@ namespace WeddingsPlanner
         public static void ImportVenues(WeddingContext context)
         {
             Console.WriteLine("Reading venues.xml ...");
-            XDocument venuesDoc = XDocument.Load(@"C:\Users\Mihail\Documents\visual studio 2015\Projects\WeddingsPlanner\WeddingsPlanner\ImportXML\venues.xml");          
+            XDocument venuesDoc = XDocument.Load(@"C:\Users\Mihail\Documents\visual studio 2015\Projects\WeddingsPlanner\WeddingsPlanner\ImportXML\venues.xml");
             ImportXml.AddVenues(venuesDoc);
         }
         public static void ImportPresents(WeddingContext context)
@@ -70,6 +74,18 @@ namespace WeddingsPlanner
             Console.WriteLine("Reading presents.xml ...");
             XDocument presentsDoc = XDocument.Load(@"C:\Users\Mihail\Documents\visual studio 2015\Projects\WeddingsPlanner\WeddingsPlanner\ImportXML\presents.xml");
             ImportXml.AddPresents(presentsDoc);
+        }
+        public static void ExportOrderedAgencies(WeddingContext context)
+        {
+            ExportJson.CreateOrderedAgencies(context);
+        }
+        public static void ExportGuestList(WeddingContext context)
+        {
+            ExportJson.CreateGuestList(context);
+        }
+        public static void ExportVenues(WeddingContext context)
+        {
+            ExportXml.ExportVenues(context);
         }
     }
 }

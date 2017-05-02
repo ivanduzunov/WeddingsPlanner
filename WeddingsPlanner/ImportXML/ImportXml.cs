@@ -31,30 +31,41 @@ namespace WeddingsPlanner.ImportXML
                     {
                         Name = name,
                         Capacity = capacity,
-                        Town = town
+                        Town = town,
+
+
                     };
 
                     context.Venues.Add(venue);
 
+
                     Console.WriteLine($"{venue.Name} venue added!");
 
-                    count++;
+
 
                 }
+                Console.ReadKey();
+                context.SaveChanges();
 
-                Random r = new Random();
 
-                foreach (var wedding in context.Weddings)
+
+
+            }
+            var con = new WeddingContext();
+            using (con)
+            {
+                foreach (var wedding in con.Weddings)
                 {
-                    
-                    int venueId1 = r.Next(1, count);
-                    int venueId2 = r.Next(1, count -3);
-                    wedding.Venues.Add(context.Venues.Where(v => v.Id == venueId1).FirstOrDefault());
-                    wedding.Venues.Add(context.Venues.Where(v => v.Id == venueId2).FirstOrDefault());
+                    Random r = new Random();
+                    int venueId1 = r.Next(1, 100);
+                    int venueId2 = r.Next(1, 100);
+                    wedding.Venues.Add(con.Venues.Where(v => v.Id == venueId1).FirstOrDefault());
+                    wedding.Venues.Add(con.Venues.Where(v => v.Id == venueId2).FirstOrDefault());
 
                     Console.WriteLine($"{wedding.Bride.FullName}'s wedding will be in {wedding.Venues.Count} places.");
+                    Console.ReadKey();
                 }
-                context.SaveChanges();
+                con.SaveChanges();
             }
         }
         public static void AddPresents(XDocument xmlDoc)
@@ -66,92 +77,89 @@ namespace WeddingsPlanner.ImportXML
                 var presents = xmlDoc.XPathSelectElements("presents/present");
                 foreach (var p in presents)
                 {
-                    var presentType = p.Attribute("type");
 
-                    if (presentType != null)
+                    if (p.Attributes().Count() > 2 && (p.FirstAttribute.Value.Equals("cash") || p.FirstAttribute.Value.Equals("gift")))
                     {
 
-                        if (presentType.Equals("cash"))
+                        var presentType = p.Attribute("type");
+
+                        if (presentType.Value.Equals("cash"))
                         {
                             int? invitationId = int.Parse(p.Attribute("invitation-id").Value);
                             double? amount = int.Parse(p.Attribute("amount").Value);
 
-                            if (invitationId <= 0 || invitationId == null || amount == null )
+                            if (invitationId > 0 && invitationId != null && amount != null && invitationId <= context.People.Count())
                             {
                                 var invitation = context.Invitations.Where(i => i.Id == invitationId).FirstOrDefault();
                                 var owner = context.People.Where(o => o.Id == invitation.GuestId).FirstOrDefault();
 
                                 Cash cash = new Cash
                                 {
-                                    Owner = owner,                               
+                                    OwnerId = owner.Id,
                                     CashAmount = (double)amount
                                 };
+                                invitation.Present = "cash";
+                                context.CashPresents.Add(cash);
+                                Console.WriteLine($"Cash Present {cash.CashAmount} imported.");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Invalid Cash Present data! ");
 
-                                try
-                                {
-                                    context.CashPresents.Add(cash);
-                                    invitation.Present = "Cash";
-                                    owner.CashPresent = cash;
-                                    
-                                    Console.WriteLine($"Cash Present {cash.CashAmount} imported.");
-                                }
-                                catch (DbEntityValidationException)
-                                {
-
-                                    Console.WriteLine("Invalid Cash Present data! ");
-                                }
-                          
                             }
                         }
-                        else if(presentType.Equals("gift"))
+                        else if (presentType.Value.Equals("gift"))
                         {
-                            try
+
+                            int? invitationIdGift = int.Parse(p.Attribute("invitation-id").Value);
+                            var prName = p.Attribute("present-name");
+                            var size = p.Attribute("size");
+                            List<string> sizes = new List<string>() { "Small", "Medium", "NotSpecified", "Large" };
+                            var invitation = context.Invitations.Where(i => i.Id == invitationIdGift).FirstOrDefault();
+
+                            Person owner = null;
+
+                            if (invitation != null && context.Invitations.Count() >= invitationIdGift)
                             {
-                                int? invitationIdGift = int.Parse(p.Attribute("invitation-id").Value);
-                                var prName = p.Attribute("present-name");
-                                var size = p.Attribute("size");
-                                List<string> sizes = new List<string>() { "Small", "Medium", "Not Specified", "Large" };
-
-                                if (prName != null && size != null && sizes.Contains(size.Value))
-                                {
-
-                                    Gift gift = new Gift
-                                    {
-                                        Name = prName.Value,
-                                        Size = size.Value.ToString(),
-                                    };
-
-
-                                    var invitation = context.Invitations.Where(i => i.Id == invitationIdGift).FirstOrDefault();
-                                    var owner = context.People.Where(o => o.Id == invitation.GuestId).FirstOrDefault();
-
-                                    
-                                    gift.Owner = owner;
-                                    invitation.Present = "Gift";
-                                    owner.GiftPresent = gift;
-                                    context.GiftPresents.Add(gift);                             
-                                    Console.WriteLine($"Gift {gift.Name} imported.");
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Invalid");
-                                }
+                                owner = context.People.Where(o => o.Id == invitation.GuestId).FirstOrDefault();
                             }
-                            catch (DbEntityValidationException)
+
+                            if (prName != null && size != null && sizes.Contains(size.Value) && invitationIdGift > 0 && owner != null)
                             {
 
-                                Console.WriteLine("Invalid Gift Present data!");
-                            }
-                            
+                                Gift gift = new Gift
+                                {
+                                    Name = prName.Value,
+                                    Size = size.Value.ToString(),
+                                    OwnerId = owner.Id
+                                };
 
+                                invitation.Present = "gift";
+                                context.GiftPresents.Add(gift);
+                                Console.WriteLine($"Gift {gift.Name} imported.");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Invalid gift present data!");
+                            }
                         }
                     }
+                    else
+                    {
+                        Console.WriteLine("Invalid Type or no type at all!");
+                    }
+
                 }
                 context.SaveChanges();
+
+
+                Console.WriteLine("Success!");
+
             }
         }
     }
 }
+
 
 
 
